@@ -1,0 +1,80 @@
+# Default values for rails.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  repository: your-docker-registry.com/project/image
+  pullPolicy: IfNotPresent
+  tag: master
+  secrets:
+    - name: registry-secret # should already exist in k8s
+
+config:
+  PIDFILE: /tmp/server.pid
+secrets:
+  DATABASE_URL: "postgres://user:password@postgres"
+  REDIS_URL: "redis://redis"
+
+ingress:
+  tls:
+    enabled: false
+    issuer:
+      name: letsencrypt-staging
+      acme_email: someone@example.com
+
+service:
+  type: ClusterIP
+  port: 80
+  host: example.com
+
+app:
+  component: web
+  port: 3000
+  replicaCount: 1
+  terminationGracePeriodSeconds: 60
+  dbMigrateCommand: "bundle exec rails db:migrate"
+  dbPrepareCommand: "bundle exec rails db:prepare"
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 4
+    targetCPUUtilizationPercentage: 80
+  readinessProbe:
+    httpGet:
+      path: /healthcheck
+      port: 3000
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 1
+  resources: {}
+    # limits:
+    #   cpu: 250m
+    #   memory: 256Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+sidekiq:
+  enabled: true
+  component: worker
+  port: 7433
+  replicaCount: 1
+  terminationGracePeriodSeconds: 60
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 4
+    targetCPUUtilizationPercentage: 80
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 7433
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 1
+  resources: {}
+    # limits:
+    #   cpu: 250m
+    #   memory: 256Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi

@@ -1,0 +1,46 @@
+{{- if .Values.sidekiq.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rails.fullname" . }}-sidekiq
+  labels:
+    {{- include "rails.labels" . | nindent 4 }}
+    app.kubernetes.io/component: {{ .Values.sidekiq.component }}
+spec:
+{{- if not .Values.sidekiq.autoscaling.enabled }}
+  replicas: {{ .Values.sidekiq.replicaCount }}
+{{- end }}
+  selector:
+    matchLabels:
+      {{- include "rails.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: {{ .Values.sidekiq.component }}
+  template:
+    metadata:
+      labels:
+        {{- include "rails.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: {{ .Values.sidekiq.component }}
+    spec:
+      imagePullSecrets:
+        {{- toYaml .Values.image.secrets | nindent 8 }}
+      terminationGracePeriodSeconds: {{ .Values.sidekiq.terminationGracePeriodSeconds }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.sidekiq.port }}
+          command: ["bundle", "exec", "sidekiq"]
+          readinessProbe:
+            {{- toYaml .Values.sidekiq.readinessProbe | nindent 12 }}
+          lifecycle:
+            preStop:
+              exec:
+                command: ["bin/sidekiq_quiet"]
+          envFrom:
+            - configMapRef:
+                name: {{ include "rails.fullname" . }}
+            - secretRef:
+                name: {{ include "rails.fullname" . }}
+          resources:
+            {{- toYaml .Values.sidekiq.resources | nindent 12 }}
+{{- end }}

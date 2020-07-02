@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "rails.fullname" . }}-db-prepare
+  annotations:
+    helm.sh/hook: pre-install
+    helm.sh/hook-delete-policy: before-hook-creation
+    helm.sh/hook-weight: "0"
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+        {{- toYaml .Values.image.secrets | nindent 8 }}
+      restartPolicy: Never
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sh"]
+          args: ["-c", "{{ .Values.app.dbPrepareCommand }}"]
+          envFrom:
+            - configMapRef:
+                name: {{ include "rails.fullname" . }}
+            - secretRef:
+                name: {{ include "rails.fullname" . }}

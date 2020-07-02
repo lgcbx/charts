@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rails.fullname" . }}
+  labels:
+    {{- include "rails.labels" . | nindent 4 }}
+    app.kubernetes.io/component: {{ .Values.app.component }}
+spec:
+{{- if not .Values.app.autoscaling.enabled }}
+  replicas: {{ .Values.app.replicaCount }}
+{{- end }}
+  selector:
+    matchLabels:
+      {{- include "rails.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: {{ .Values.app.component }}
+  template:
+    metadata:
+      labels:
+        {{- include "rails.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: {{ .Values.app.component }}
+    spec:
+      imagePullSecrets:
+        {{- toYaml .Values.image.secrets | nindent 8 }}
+      terminationGracePeriodSeconds: {{ .Values.app.terminationGracePeriodSeconds }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.app.port }}
+          readinessProbe:
+            {{- toYaml .Values.app.readinessProbe | nindent 12 }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "rails.fullname" . }}
+            - secretRef:
+                name: {{ include "rails.fullname" . }}
+          resources:
+            {{- toYaml .Values.app.resources | nindent 12 }}

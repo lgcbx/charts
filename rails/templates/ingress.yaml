@@ -1,0 +1,31 @@
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ include "rails.fullname" . }}
+  labels:
+    {{- include "rails.labels" . | nindent 4 }}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    {{- if .Values.ingress.tls.enabled }}
+    kubernetes.io/tls-acme: "true"
+    certmanager.io/cluster-issuer: {{ .Values.ingress.tls.issuer.name }}
+    {{- end }}
+spec:
+  {{- if .Values.ingress.tls.enabled }}
+  tls:
+    - secretName: {{ include "rails.fullname" . }}-cert
+      hosts:
+        - {{ .Values.service.host | quote }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.service.host | quote }}
+      http:
+        paths:
+          - path: "/"
+            backend:
+              serviceName: {{ include "rails.fullname" . }}
+              servicePort: {{ .Values.service.port }}

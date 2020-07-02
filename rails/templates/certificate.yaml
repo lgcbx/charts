@@ -1,0 +1,14 @@
+{{- if .Values.ingress.tls.enabled }}
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: {{ include "rails.fullname" . }}-cert
+spec:
+  secretName: {{ include "rails.fullname" . }}-cert
+  dnsNames:
+    - {{ .Values.service.host | quote }}
+  issuerRef:
+    name: {{ .Values.ingress.tls.issuer.name }}
+    kind: ClusterIssuer
+    group: cert-manager.io
+{{- end }}
