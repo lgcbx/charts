@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "rails.fullname" . }}-sidekiq
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "rails.labels" . | nindent 4 }}
     app.kubernetes.io/component: {{ .Values.sidekiq.component }}

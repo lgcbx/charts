@@ -6,6 +6,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ include "rails.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "rails.labels" . | nindent 4 }}
   annotations:
