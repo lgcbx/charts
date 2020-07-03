@@ -2,12 +2,12 @@ apiVersion: v1
 entries:
   rails:
   - apiVersion: v2
-    created: "2020-07-02T19:05:36.724217-06:00"
+    created: "2020-07-02T20:17:35.226876-06:00"
     description: A Helm chart for deploying Ruby on Rails applications to Kubernetes
-    digest: beb84760b4580afa2d41218a6d9b817a245ffe72f7a8b1c10eafd9d37858fdf5
+    digest: aa3d6bd8a9e0365ee652bd27a93607f6c9b0e50fd9a2c71187c0a6438be2aac6
     name: rails
     type: application
     urls:
-    - rails-0.1.0.tgz
-    version: 0.1.0
-generated: "2020-07-02T19:05:36.72341-06:00"
+    - rails-0.1.1.tgz
+    version: 0.1.1
+generated: "2020-07-02T20:17:35.225425-06:00"
