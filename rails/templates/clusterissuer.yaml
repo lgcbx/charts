@@ -3,7 +3,6 @@ apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer
 metadata:
   name: letsencrypt-prod
-  namespace: {{ .Release.Namespace }}
 spec:
   acme:
     email: {{ .Values.ingress.tls.issuer.acme_email }}
@@ -19,7 +18,6 @@ apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer
 metadata:
   name: letsencrypt-staging
-  namespace: {{ .Release.Namespace }}
 spec:
   acme:
     email: {{ .Values.ingress.tls.issuer.acme_email }}
