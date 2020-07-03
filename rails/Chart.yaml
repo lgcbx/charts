@@ -2,4 +2,4 @@ apiVersion: v2
 name: rails
 description: A Helm chart for deploying Ruby on Rails applications to Kubernetes
 type: application
-version: 0.1.1
+version: 0.1.2
