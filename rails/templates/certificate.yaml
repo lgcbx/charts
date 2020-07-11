@@ -10,6 +10,6 @@ spec:
     - {{ .Values.service.host | quote }}
   issuerRef:
     name: {{ .Values.ingress.tls.issuer.name }}
-    kind: ClusterIssuer
+    kind: Issuer
     group: cert-manager.io
 {{- end }}

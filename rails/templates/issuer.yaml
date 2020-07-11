@@ -1,8 +1,9 @@
 {{- if .Values.ingress.tls.enabled }}
 apiVersion: cert-manager.io/v1alpha2
-kind: ClusterIssuer
+kind: Issuer
 metadata:
   name: letsencrypt-prod
+  namespace: {{ .Release.Namespace }}
 spec:
   acme:
     email: {{ .Values.ingress.tls.issuer.acme_email }}
@@ -15,9 +16,10 @@ spec:
             class: nginx
 ---
 apiVersion: cert-manager.io/v1alpha2
-kind: ClusterIssuer
+kind: Issuer
 metadata:
   name: letsencrypt-staging
+  namespace: {{ .Release.Namespace }}
 spec:
   acme:
     email: {{ .Values.ingress.tls.issuer.acme_email }}
