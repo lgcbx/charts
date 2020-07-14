@@ -1,0 +1,13 @@
+replicaCount: 1
+
+image:
+  repository: myoung34/github-runner
+  pullPolicy: IfNotPresent
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+accessToken: ""
+orgName: lgcbx

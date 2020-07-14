@@ -1,0 +1,6 @@
+apiVersion: v2
+name: github-runner
+description: A Helm chart for deploying GitHub Actions self-hosted runners to Kubernetes
+type: application
+version: 0.1.0
+appVersion: 2.267.1
