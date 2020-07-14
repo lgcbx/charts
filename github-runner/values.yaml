@@ -4,6 +4,7 @@ image:
   repository: myoung34/github-runner
   pullPolicy: IfNotPresent
   tag: ""
+  distro: ubuntu-bionic
 
 imagePullSecrets: []
 nameOverride: ""
@@ -11,3 +12,4 @@ fullnameOverride: ""
 
 accessToken: ""
 orgName: lgcbx
+runnerWorkdir: /tmp/github-runner

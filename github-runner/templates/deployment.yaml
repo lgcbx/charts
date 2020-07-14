@@ -19,9 +19,16 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: dockersock
+          hostPath:
+            path: /var/run/docker.sock
+        - name: workdir
+          hostPath:
+            path: {{ .Values.runnerWorkdir }}
       containers:
         - name: {{ .Chart.Name }}
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+          image: {{ include "github-runner.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: ACCESS_TOKEN
@@ -30,3 +37,10 @@ spec:
               value: "true"
             - name: ORG_NAME
               value: {{ .Values.orgName }}
+            - name: RUNNER_WORKDIR
+              value: {{ .Values.runnerWorkdir }}
+          volumeMounts:
+            - name: dockersock
+              mountPath: /var/run/docker.sock
+            - name: workdir
+              mountPath: {{ .Values.runnerWorkdir }}

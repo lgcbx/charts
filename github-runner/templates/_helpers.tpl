@@ -50,3 +50,14 @@ Selector labels
 app.kubernetes.io/name: {{ include "github-runner.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+Chart image helper
+*/}}
+{{- define "github-runner.image" -}}
+{{- if .Values.image.tag }}
+{{- print "%s:%s" .Values.image.repository .Values.image.tag }}
+{{- else }}
+{{- printf "%s:%s-%s" .Values.image.repository .Chart.AppVersion "ubuntu-bionic" }}
+{{- end }}
+{{- end }}
